@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,7 +32,10 @@ namespace WebApi.Controllers
         public async Task<IActionResult> GetProduct()
         {
             List<ProductListResponse> productList = new List<ProductListResponse>();
-            MySqlCommand cmd = new MySqlCommand("SELECT * FROM products", _connection);
+            // MySqlCommand cmd = new MySqlCommand("SELECT * FROM products", _connection);
+            MySqlCommand cmd = new MySqlCommand("GetProductList", _connection);
+            cmd.CommandType = CommandType.StoredProcedure;
+
             using var reader = await cmd.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
