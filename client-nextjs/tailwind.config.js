@@ -1,5 +1,9 @@
 module.exports = {
-  content: ["./src/**/*.{html,js,jsx}"],
+  content: [
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./shared/components/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+  ],
   presets: [],
   darkMode: "media", // or 'class'
   theme: {
@@ -11,6 +15,8 @@ module.exports = {
       "2xl": "1536px",
     },
     colors: ({ colors }) => ({
+      primary1: "#00274D",
+      primary2: "#EC2226",
       inherit: colors.inherit,
       current: colors.current,
       transparent: colors.transparent,
@@ -370,6 +376,7 @@ module.exports = {
         '"Courier New"',
         "monospace",
       ],
+      default: ["Poppins", "Prompt", "sans-serif"],
     },
     fontSize: {
       xs: ["0.75rem", { lineHeight: "1rem" }],
@@ -531,6 +538,7 @@ module.exports = {
       "3/6": "50%",
       "4/6": "66.666667%",
       "5/6": "83.333333%",
+      31: "31rem",
       full: "100%",
       screen: "100vh",
       min: "min-content",
@@ -608,6 +616,7 @@ module.exports = {
     margin: ({ theme }) => ({
       auto: "auto",
       ...theme("spacing"),
+      30: "7.5rem",
     }),
     maxHeight: ({ theme }) => ({
       ...theme("spacing"),
@@ -631,6 +640,7 @@ module.exports = {
       "5xl": "64rem",
       "6xl": "72rem",
       "7xl": "80rem",
+      "9xl": "90rem",
       full: "100%",
       min: "min-content",
       max: "max-content",
@@ -788,6 +798,7 @@ module.exports = {
     },
     space: ({ theme }) => ({
       ...theme("spacing"),
+      31: "31rem",
     }),
     stroke: ({ theme }) => theme("colors"),
     strokeWidth: {
@@ -926,6 +937,7 @@ module.exports = {
       30: "30",
       40: "40",
       50: "50",
+      9999: "9999",
     },
   },
   variantOrder: [
