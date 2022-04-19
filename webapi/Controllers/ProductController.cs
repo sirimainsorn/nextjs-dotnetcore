@@ -17,19 +17,12 @@ namespace WebApi.Controllers
     [Route("api/[controller]")]
     public class ProductController : ControllerBase
     {
-        // public MySqlConnection _connection;
-        // private string _connectionStrings;
-        // public ProductController(IOptions<MySqlConnection> connectionStrings)
-        // {
-        //     _connectionStrings = connectionStrings.Value.PrimaryDatabase;
-        //     _connection = new MySqlConnection(connectionString);
-        // }
-        // private MySqlDatabase _connection;
         private MySqlConnection _connection;
         private string _connectionStrings;
-        public ProductController()
+        public IConfiguration Configuration { get; set; }
+        public ProductController(IConfiguration configuration)
         {
-            _connectionStrings = "server=localhost;user=root;password=123456;database=mybiz;port=3306;";
+            _connectionStrings = configuration["ConnectionStrings:Default"];
             _connection = new MySqlConnection(_connectionStrings);
             _connection.Open();
         }
