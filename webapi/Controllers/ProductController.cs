@@ -30,15 +30,21 @@ namespace WebApi.Controllers
         [HttpGet("ProductList")]
         public async Task<IActionResult> GetProduct()
         {
-            // var cmd = this.MySqlDatabase.Connection.CreateCommand() as MySqlCommand;
-            // cmd.CommandText = @"SELECT * FROM dbo.Products";
+            List<ProductListResponse> productList = new List<ProductListResponse>();
+            MySqlCommand cmd = new MySqlCommand("SELECT * FROM products", _connection);
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                ProductListResponse productResponse = new ProductListResponse();
+                productResponse.ProductID = Convert.ToInt32(reader["ProductID"]);
+                productResponse.ProductName = reader["ProductName"].ToString();
+                productResponse.ProductPrice = Convert.ToDecimal(reader["ProductPrice"]);
+                productResponse.CategoryID = Convert.ToInt32(reader["CategoryID"]);
+                productList.Add(productResponse);
+            }
+            reader.Close();
 
-            // var reader = await cmd.ExecuteReaderAsync();
-            Console.WriteLine("Hello");
-            // var response = new ProductsModel();
-            // response = await reader.ReadAsync();
-
-            return Ok();
+            return Ok(productList);
         }
     }
 }
