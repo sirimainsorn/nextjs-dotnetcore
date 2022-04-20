@@ -1,6 +1,8 @@
 import Router from "next/router";
 import { useEffect, useState } from "react";
 import { Provider } from "react-redux";
+import { stores } from "../stores";
+
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
@@ -26,9 +28,11 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <Provider store={stores}>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </Provider>
   );
 }
 
