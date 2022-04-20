@@ -1,5 +1,5 @@
 import Head from "next/head";
-import Image from "next/image";
+import LayoutDefault from "../shared/components/Layout/LayoutDefault";
 
 export default function Home() {
   return (
@@ -12,3 +12,5 @@ export default function Home() {
     </div>
   );
 }
+
+Home.layout = LayoutDefault;
