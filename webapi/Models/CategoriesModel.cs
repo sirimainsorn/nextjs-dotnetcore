@@ -1,12 +1,13 @@
 using System;
 
-namespace WebApi.Models {
-  public class CategoryListResponse {
-    public int CategoryID { get; set; }
+namespace WebApi.Models
+{
+    public class CategoryListResponse
+    {
+        public int categoryID { get; set; }
 
-    public string CategoryNameTH { get; set; }
+        public string categoryNameTH { get; set; }
 
-    public string CategoryNameEN { get; set; }
-
-  }
+        public string categoryNameEN { get; set; }
+    }
 }

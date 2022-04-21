@@ -17,7 +17,7 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
-    public class CategoriesController : ControllerBase
+    public class ProductController : ControllerBase
     {
         private MySqlConnection _connection;
         
@@ -25,33 +25,35 @@ namespace WebApi.Controllers
         
         public IConfiguration Configuration { get; }
 
-        public CategoriesController(IConfiguration configuration)
+        public ProductController(IConfiguration configuration)
         {
             _connectionStrings = configuration["ConnectionStrings:Default"];
             _connection = new MySqlConnection(_connectionStrings);
             _connection.Open();
         }
 
-        [HttpGet("CategoryList")]
-        public async Task<IActionResult> GetCategoryList()
+        [HttpGet("ProductList")]
+        public async Task<IActionResult> GetProductList()
         {
-            List<CategoryListResponse> categoryList = new List<CategoryListResponse>();
-            MySqlCommand cmd = new MySqlCommand("GetCategoryList", _connection);
+            List<ProductListResponse> productList = new List<ProductListResponse>();
+            MySqlCommand cmd = new MySqlCommand("GetProductList", _connection);
             cmd.CommandType = CommandType.StoredProcedure;
 
             using var reader = await cmd.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
-                CategoryListResponse categoryResponse = new CategoryListResponse();
-                categoryResponse.categoryID = Convert.ToInt32(reader["categoryID"]);
-                categoryResponse.categoryNameTH = reader["categoryNameTH"].ToString();
-                categoryResponse.categoryNameEN = reader["categoryNameEN"].ToString();
-                categoryList.Add(categoryResponse);
+                ProductListResponse productResponse = new ProductListResponse();
+                productResponse.productID = Convert.ToInt32(reader["productID"]);
+                productResponse.productNameTH = reader["productNameTH"].ToString();
+                productResponse.productNameEN = reader["productNameEN"].ToString();
+                productResponse.productPrice = Convert.ToDecimal(reader["productPrice"]);
+                productResponse.categoryID = Convert.ToInt32(reader["categoryID"]);
+                productList.Add(productResponse);
             }
 
             reader.Close();
 
-            return Ok(categoryList);
+            return Ok(productList);
         }
     }
 }
