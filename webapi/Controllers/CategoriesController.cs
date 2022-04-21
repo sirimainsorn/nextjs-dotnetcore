@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
+using Newtonsoft.Json;
+
+using MySql.Data;
 using MySql.Data.MySqlClient;
 
 using WebApi.Models;
@@ -38,8 +41,15 @@ namespace WebApi.Controllers
             List<CategoryListResponse> categoryList = new List<CategoryListResponse>();
             MySqlCommand cmd = new MySqlCommand("GetCategoryList", _connection);
             cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(new MySqlParameter("pageNo", 1));
+            cmd.Parameters["pageNo"].Direction = ParameterDirection.InputOutput;
+            cmd.Parameters.Add(new MySqlParameter("pageRow", 10));
+            cmd.Parameters["pageRow"].Direction = ParameterDirection.InputOutput;
+            cmd.Parameters.Add(new MySqlParameter("totalRecord", System.Data.SqlDbType.Int));
+            cmd.Parameters["totalRecord"].Direction = ParameterDirection.Output;
 
             using var reader = await cmd.ExecuteReaderAsync();
+        
             while (await reader.ReadAsync())
             {
                 CategoryListResponse categoryResponse = new CategoryListResponse();
@@ -47,6 +57,14 @@ namespace WebApi.Controllers
                 categoryResponse.categoryNameTH = reader["categoryNameTH"].ToString();
                 categoryResponse.categoryNameEN = reader["categoryNameEN"].ToString();
                 categoryList.Add(categoryResponse);
+            }
+
+            if (reader.NextResult())
+            {
+                while (await reader.ReadAsync())
+                {
+                    Console.WriteLine(reader.GetString(0));
+                }
             }
 
             reader.Close();
