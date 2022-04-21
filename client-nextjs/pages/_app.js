@@ -1,9 +1,11 @@
 import Router from "next/router";
 import { useEffect, useState } from "react";
 import { Provider } from "react-redux";
+import Loading from "../shared/components/Loading";
 import { stores } from "../stores";
 
 import "../styles/globals.css";
+import "../styles/loading.css";
 
 function MyApp({ Component, pageProps }) {
   const Layout = Component.layout || (({ children }) => <>{children}</>);
@@ -30,6 +32,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <Provider store={stores}>
       <Layout>
+        {isLoading && <Loading />}
         <Component {...pageProps} />
       </Layout>
     </Provider>
