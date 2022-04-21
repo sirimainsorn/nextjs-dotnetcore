@@ -1,6 +1,7 @@
 export const GlobalReducer = (
   state = {
     loading: false,
+    menuActive: "/",
   },
   action
 ) => {

@@ -2,10 +2,10 @@ import React from "react";
 
 export default function Footer() {
   return (
-    <div className="bg-gray-800">
+    <div className="bg-blue-900">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         {/* menu footer */}
-        <div className="py-6 lg:py-8 grid grid-cols-4 gap-4 text-gray-400">
+        <div className="py-6 lg:py-8 grid grid-cols-4 gap-4 text-gray-100">
           <div>
             <h2 className="font-bold">CONTACT US</h2>
           </div>
@@ -19,7 +19,7 @@ export default function Footer() {
         {/* copy right */}
         <div className="flex justify-between py-4 lg:py-6">
           <div>
-            <h4 className="text-gray-400 text-sm">2020 Workflow</h4>
+            <h4 className="text-gray-100 text-sm">2020 Workflow</h4>
           </div>
           <div></div>
         </div>
