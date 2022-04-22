@@ -32,6 +32,7 @@ namespace WebApi.Controllers
         {
             _connectionStrings = configuration["ConnectionStrings:Default"];
             _connection = new MySqlConnection(_connectionStrings);
+            _connection.Open();
         }
 
         [HttpGet("CategoryList")]
@@ -40,14 +41,10 @@ namespace WebApi.Controllers
             List<CategoryListResponse> categoryList = new List<CategoryListResponse>();
             MySqlCommand cmd = new MySqlCommand("GetCategoryList", _connection);
             cmd.CommandType = CommandType.StoredProcedure;
-            _connection.Open();
-
             cmd.Parameters.Add(new MySqlParameter("pageNo", pageNo == 0 ? 1 : pageNo));
-            cmd.Parameters["pageNo"].Direction = ParameterDirection.InputOutput;
+            cmd.Parameters["pageNo"].Direction = ParameterDirection.Input;
             cmd.Parameters.Add(new MySqlParameter("pageRow", pageRow == 0 ? 10 : pageRow));
-            cmd.Parameters["pageRow"].Direction = ParameterDirection.InputOutput;
-            cmd.Parameters.Add(new MySqlParameter("totalRecord", System.Data.SqlDbType.Int));
-            cmd.Parameters["totalRecord"].Direction = ParameterDirection.Output;
+            cmd.Parameters["pageRow"].Direction = ParameterDirection.Input;
 
             using var reader = await cmd.ExecuteReaderAsync();
         
@@ -61,18 +58,20 @@ namespace WebApi.Controllers
             }
                 
             int count = categoryList.Count();
-            Console.WriteLine(count);
+            int TotalPages = (int)Math.Ceiling(count / (double)pageRow);
 
+            var categoryMetadata = new
+            {  
+                pageNo = pageNo == 0 ? 1 : pageNo,
+                pageRow = pageRow == 0 ? 10 : pageRow,
+                totalRecord = count,
+                totalPage = TotalPages,
+                data = categoryList
+            };
+  
             reader.Close();
 
-            return Ok(
-                new {
-                    pageNo = pageNo == 0 ? 1 : pageNo,
-                    pageRow = pageRow == 0 ? 10 : pageRow,
-                    totalRecord = count,
-                    data = categoryList
-                }
-            );
+            return Ok(categoryMetadata);
         }
     }
 }

@@ -33,11 +33,15 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("ProductList")]
-        public async Task<IActionResult> GetProductList()
+        public async Task<IActionResult> GetProductList(int pageNo, int pageRow)
         {
             List<ProductListResponse> productList = new List<ProductListResponse>();
             MySqlCommand cmd = new MySqlCommand("GetProductList", _connection);
             cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(new MySqlParameter("pageNo", pageNo == 0 ? 1 : pageNo));
+            cmd.Parameters["pageNo"].Direction = ParameterDirection.Input;
+            cmd.Parameters.Add(new MySqlParameter("pageRow", pageRow == 0 ? 10 : pageRow));
+            cmd.Parameters["pageRow"].Direction = ParameterDirection.Input;
 
             using var reader = await cmd.ExecuteReaderAsync();
             while (await reader.ReadAsync())
@@ -51,9 +55,21 @@ namespace WebApi.Controllers
                 productList.Add(productResponse);
             }
 
+            int count = productList.Count();
+            int TotalPages = (int)Math.Ceiling(count / (double)pageRow);
+
+            var productMetadata = new
+            {  
+                pageNo = pageNo == 0 ? 1 : pageNo,
+                pageRow = pageRow == 0 ? 10 : pageRow,
+                totalRecord = count,
+                totalPage = TotalPages,
+                data = productList
+            };
+
             reader.Close();
 
-            return Ok(productList);
+            return Ok(productMetadata);
         }
     }
 }
