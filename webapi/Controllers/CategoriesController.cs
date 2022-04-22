@@ -73,5 +73,19 @@ namespace WebApi.Controllers
 
             return Ok(categoryMetadata);
         }
+
+        [HttpPost("CreateCategory")]
+        public async Task<ActionResult<CategoryItem>> CreateCategory(CategoryItem category)
+        {
+            MySqlCommand cmd = new MySqlCommand("InsertCategory", _connection);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(new MySqlParameter("categoryNameTH", category.categoryNameTH.ToString()));
+            cmd.Parameters["categoryNameTH"].Direction = ParameterDirection.Input;
+            cmd.Parameters.Add(new MySqlParameter("categoryNameEN", category.categoryNameEN.ToString()));
+            cmd.Parameters["categoryNameEN"].Direction = ParameterDirection.Input;
+            await cmd.ExecuteReaderAsync();
+        
+            return Ok();
+        }
     }
 }
