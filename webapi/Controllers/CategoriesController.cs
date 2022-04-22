@@ -32,18 +32,19 @@ namespace WebApi.Controllers
         {
             _connectionStrings = configuration["ConnectionStrings:Default"];
             _connection = new MySqlConnection(_connectionStrings);
-            _connection.Open();
         }
 
         [HttpGet("CategoryList")]
-        public async Task<IActionResult> GetCategoryList()
+        public async Task<IActionResult> GetCategoryList(int pageNo, int pageRow)
         {
             List<CategoryListResponse> categoryList = new List<CategoryListResponse>();
             MySqlCommand cmd = new MySqlCommand("GetCategoryList", _connection);
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add(new MySqlParameter("pageNo", 1));
+            _connection.Open();
+
+            cmd.Parameters.Add(new MySqlParameter("pageNo", pageNo == 0 ? 1 : pageNo));
             cmd.Parameters["pageNo"].Direction = ParameterDirection.InputOutput;
-            cmd.Parameters.Add(new MySqlParameter("pageRow", 10));
+            cmd.Parameters.Add(new MySqlParameter("pageRow", pageRow == 0 ? 10 : pageRow));
             cmd.Parameters["pageRow"].Direction = ParameterDirection.InputOutput;
             cmd.Parameters.Add(new MySqlParameter("totalRecord", System.Data.SqlDbType.Int));
             cmd.Parameters["totalRecord"].Direction = ParameterDirection.Output;
@@ -58,18 +59,20 @@ namespace WebApi.Controllers
                 categoryResponse.categoryNameEN = reader["categoryNameEN"].ToString();
                 categoryList.Add(categoryResponse);
             }
-
-            if (reader.NextResult())
-            {
-                while (await reader.ReadAsync())
-                {
-                    Console.WriteLine(reader.GetString(0));
-                }
-            }
+                
+            int count = categoryList.Count();
+            Console.WriteLine(count);
 
             reader.Close();
 
-            return Ok(categoryList);
+            return Ok(
+                new {
+                    pageNo = pageNo == 0 ? 1 : pageNo,
+                    pageRow = pageRow == 0 ? 10 : pageRow,
+                    totalRecord = count,
+                    data = categoryList
+                }
+            );
         }
     }
 }
